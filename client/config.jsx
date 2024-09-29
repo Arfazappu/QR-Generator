@@ -1,1 +1,2 @@
-export const FE_URL = 'https://ed7f-88-150-230-46.ngrok-free.app';
+export const BASE_URL = 'https://cryptocheck-proto-1.onrender.com';
+export const FE_URL = 'https://cryptoqrverify.netlify.app';
