@@ -5,9 +5,12 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import "./App.css";
 import Certificate2 from "./Certificate2";
+import CheckTemplate from "./CheckTemplate";
+
+import {FE_URL }from '../config.jsx'
 
 const BASE_URL = "http://localhost:9098";
-const FE_URL="https://f1a2-78-129-150-13.ngrok-free.app"
+// const FE_URL="https://f1a2-78-129-150-13.ngrok-free.app"
 
 const QrGenerator = () => {
   const [excelData, setExcelData] = useState([]);
@@ -311,6 +314,8 @@ const handleFileUpload = (e) => {
           />
         </div>
       ))}
+
+      {/* <CheckTemplate/> */}
 
 
       {/* <Certificate2/> */}

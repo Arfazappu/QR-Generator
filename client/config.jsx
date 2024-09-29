@@ -1,0 +1,1 @@
+export const FE_URL = 'https://ed7f-88-150-230-46.ngrok-free.app';
