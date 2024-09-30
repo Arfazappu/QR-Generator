@@ -2,12 +2,12 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import React, { useState } from "react";
+import { RxCross2 } from "react-icons/rx";
 import * as XLSX from "xlsx";
 import { BASE_URL, FE_URL } from "../config.jsx";
 import "./App.css";
 import Certificate2 from "./Certificate2";
 import CheckTemplate from "./CheckTemplate.jsx";
-import { RxCross2 } from "react-icons/rx";
 
 //const BASE_URL = "http://localhost:9098";
 // const BASE_URL = "https://cryptocheck-proto.onrender.com";
@@ -16,8 +16,8 @@ import { RxCross2 } from "react-icons/rx";
 // const FE_URL="http://localhost:5173"
 
 const filePaths = {
-  certificate: "../public/assets/sample1.xlsx",
-  cheque: "../public/assets/sample2.xlsx",
+  certificate: "/assets/sample1.xlsx",
+  cheque: "/assets/sample2.xlsx",
 };
 
 const requiredParams = {
