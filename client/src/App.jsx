@@ -18,7 +18,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<QrGenerator />} />
           {/* <Route path="/verify" element={<QrVerifyComponent />} /> */}
-          <Route path='/qr/:qrId' element={<QrDataComponent/>}></Route>
+          <Route path='/qr/:qrId' element={<QrDataComponent/>}/>
         </Routes>
       </div>
     </Router>
