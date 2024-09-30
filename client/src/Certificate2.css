@@ -1,0 +1,114 @@
+/* .cert2-container {
+    border: 15px solid #007BFF;
+    padding: 40px;
+    width: 900px;
+    background-color: white;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.cert2-header {
+    margin-bottom: 30px;
+}
+
+.cert2-university-name {
+    font-family: 'Georgia', serif;
+    font-size: 36px;
+    color: #003366;
+    margin-bottom: 5px;
+}
+
+.cert2-title{
+    font-family: 'Times New Roman', serif;
+    font-size: 28px;
+    color: #000;
+    margin: 0;
+}
+
+.cert2-body {
+    margin: 30px 0;
+}
+
+.cert2-content-text {
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
+    font-family: 'Times New Roman', serif;
+}
+
+.cert2-recipient-name {
+    font-size: 30px;
+    color: #007BFF;
+    margin: 10px 0;
+    font-family: 'Georgia', serif;
+}
+
+.cert2-course-name {
+    font-size: 24px;
+    font-family: 'Times New Roman', serif;
+    margin-bottom: 20px;
+}
+
+.cert2-issued-date {
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    color: #555;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.cert2-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.cert2-signature-section {
+    width: 40%;
+    text-align: left;
+}
+
+.cert2-signature-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.cert2-signature-line {
+    border-top: 2px solid #333;
+    width: 80%;
+    margin-top: 5px;
+}
+
+.cert2-qrCode-section {
+    width: 20%;
+}
+
+.cert2-qrCode {
+    width: 80px;
+    height: 80px;
+} */
+
+
+/* HTML: <div class="ribbon">Your text content</div> */
+.ribbon {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+  }
+  .ribbon {
+    --r: .8em; /* control the cutout */
+
+    position: absolute;
+    right: 20px;
+    top: 0;
+    border-inline: .5em solid #0000;
+    padding: .5em .2em calc(var(--r) + .2em);
+    clip-path: polygon(0 0,100% 0,100% 100%,calc(100% - .5em) 100%,50% calc(100% - var(--r)),.5em 100%,0 100%);
+    background:
+     radial-gradient(50% .2em at top,#000a,#0000) border-box,
+     #334155 padding-box; /* the color  */
+    width: fit-content;
+  }

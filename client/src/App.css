@@ -23,6 +23,9 @@ body {
   text-align: center;
   color: #333;
   margin-bottom: 20px;
+  font-size: 36px;
+  font-weight: 600;
+
 }
 
 .upload-section {
@@ -44,6 +47,7 @@ body {
   border-radius: 4px;
   width: 100%;
   background-color: white;
+  font-size: 14px;
 }
 
 .document-select {
@@ -72,6 +76,10 @@ body {
   font-size: 16px;
 }
 
+.upload-button{
+  margin: 30px auto;
+}
+
 .generate-button:hover {
   background-position: right center; 
   color: #fff;
@@ -84,8 +92,11 @@ body {
 }
 
 .certificate-container {
-  width: 95vw;
-  height: 95vh;
+  /* width: 95vw;
+  height: 95vh; */
+
+  width: 1100px;
+  height: 550px;
   margin:30px auto;
   position: relative;
   overflow: hidden;
@@ -93,7 +104,7 @@ body {
   background-color: var(--blue);
   background-image: url('data:image/svg+xml;utf8,<svg width="55" height="45" viewBox="0 0 55 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M5.49121 44.2515C5.49121 40.4116 7.02223 36.7289 9.74745 34.0137C12.4727 31.2985 16.1689 29.7731 20.0229 29.7731C23.877 29.7731 27.5732 31.2985 30.2984 34.0137C33.0236 36.7289 34.5546 40.4116 34.5546 44.2515M20.0229 20.724C20.0229 16.8841 21.5539 13.2014 24.2791 10.4862C27.0044 7.77095 30.7006 6.24554 34.5546 6.24554C38.4087 6.24554 42.1049 7.77095 44.8301 10.4862C47.5553 13.2014 49.0863 16.8841 49.0863 20.724V44.2515" stroke="%230261CC50" stroke-width="11"/></svg>');
   background-size: 160%;
-  background-position: 90% 150%;
+  background-position: 97% 157%;
   background-repeat: no-repeat;
   padding: 2.5rem;
   border: 2px solid gray;
@@ -155,3 +166,24 @@ svg {
 .bold {
   font-weight: 500;
 }
+
+
+.nav-bar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.nav-button {
+  padding: 10px;
+  background-color: #4b5b6d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: #0056b3;
+}
+
