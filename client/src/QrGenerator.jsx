@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
+import { BASE_URL, FE_URL } from '../config.jsx';
 import "./App.css";
 import Certificate2 from "./Certificate2";
 import { FE_URL, BASE_URL } from "../config.jsx";
@@ -13,6 +14,28 @@ import CheckTemplate from "./CheckTemplate.jsx";
 // const BASE_URL = "https://cryptocheck-proto-2seg-et9qtemzq.vercel.app";
 //const FE_URL="https://qr-generator-tvao-cw8vznivn-mohammed-ajmals-projects-95362c99.vercel.app"
 // const FE_URL="http://localhost:5173"
+
+const filePaths={
+  certificate:"../public/assets/sample1.xlsx",
+  bankDocument : "../public/assets/sample2.xlsx"
+}
+
+const requiredParams = {
+  certificate: [
+    { label: "Name", example: "John Doe" },
+    { label: "Course", example: "Bachelor of Science" },
+    { label: "Date", example: "01-01-2024" },
+    { label: "Register Number", example: "123456" }
+  ],
+  bankDocument: [
+    { label: "Account Holder Name", example: "Jane Smith" },
+    { label: "Bank Name", example: "Bank of America" },
+    { label: "Cheque Number", example: "789654123" },
+    { label: "Issue Date", example: "10-09-2024" }
+  ]
+};
+
+
 
 const QrGenerator = () => {
   const [excelData, setExcelData] = useState([]);
@@ -195,6 +218,7 @@ const QrGenerator = () => {
 
       const result = await response.json();
       console.log("Data uploaded successfully:", result);
+      
     } catch (error) {
       console.error("Error uploading data to backend:", error);
     }
@@ -290,6 +314,21 @@ const QrGenerator = () => {
         </button>
       </div>
 
+      <a href={selectedFile} download className="download-button">
+        Download Excel Template
+        </a>
+
+        <div className="parameters-box">
+        <h3>Required Parameters</h3>
+        <ul>
+          {selectedParams.map((param, index) => (
+            <li key={index}>
+              <strong>{param.label}:</strong> <em>{param.example}</em>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* {currentData && qrCodeUrl && (
         <>
           <Certificate
@@ -306,7 +345,7 @@ const QrGenerator = () => {
           onClick={() => uploadDocuments(generatedDocuments)}
           className="upload-button generate-button"
         >
-          Upload All Certificates
+          {isUploading ? "Loading..." : "Upload All Certificates"}
         </button>
       ) : null}
 

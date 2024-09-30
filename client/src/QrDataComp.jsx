@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { BASE_URL } from '../config.jsx';
 import './QrDataComp.css'; // Import the CSS file
-import {FE_URL, BASE_URL} from '../config.jsx'
 
 import check from './assets/check.png';
+import redCross from './assets/redcross.png';
 
 const mockData = {
   name: "John Doe",
   registrationNumber: "2023-7890-1XXX",
-  qrId: "QR12345"
+  qrId: "QR12345",
+  Date:"23-feb-2024"
 };
 // const FE_URL="https://qr-generator-tvao-cw8vznivn-mohammed-ajmals-projects-95362c99.vercel.app"
 // const BASE_URL="https://cryptocheck-proto.onrender.com"
@@ -81,18 +83,35 @@ const QrDataComponent = () => {
           </div>
           <div>
             <p className="text-sm text-gray-500">Registration Number</p>
-            <p className="font-medium text-gray-800">{data?.RegistrationNumber || mockData.registrationNumber}</p>
+            <p className="font-medium text-gray-800">{data?.RegisterNumber || mockData.registrationNumber}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">QR ID</p>
             <p className="font-medium text-gray-800">{data?.QrId || mockData.qrId}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Issued Date</p>
+            <p className="font-medium text-gray-800">{data?.Date || mockData.Date}</p>
           </div>
         </div>
       </div>
     </div>
     </div>
     ) : (
-      <p>No data found for this QR ID.</p>
+      <div className="w-screen h-screen flex items-center justify-center">
+        <div className="w-full max-w-md mx-auto bg-white shadow-2xl rounded-lg overflow-hidden">
+          <div className="p-6">
+            <div className="flex flex-col items-center mb-6">
+              <img
+                src={redCross} 
+                alt="Red Cross"
+                className="w-16 h-16 text-red-500 mb-2"
+              />
+              <h2 className="text-2xl font-bold text-gray-800">No Data Found For this QR</h2>
+            </div>
+          </div>
+        </div>
+      </div>
     )}
 
 </>
