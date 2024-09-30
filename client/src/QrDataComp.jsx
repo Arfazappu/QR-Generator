@@ -79,11 +79,11 @@ const QrDataComponent = () => {
         <div className="space-y-4">
           <div>
             <p className="text-sm text-gray-500">Name</p>
-            <p className="font-medium text-gray-800">{data?.Name || mockData.name}</p>
+            <p className="font-medium text-gray-800">{data?.Name ||data?.Payee_Name||mockData.name}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Registration Number</p>
-            <p className="font-medium text-gray-800">{data?.RegisterNumber || mockData.registrationNumber}</p>
+            <p className="text-sm text-gray-500">{data?.Payee_Name ? "Cheque Number" : "Register Number"}</p>
+            <p className="font-medium text-gray-800">{data?.RegisterNumber ||data?.Cheque_number|| mockData.registrationNumber}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">QR ID</p>
