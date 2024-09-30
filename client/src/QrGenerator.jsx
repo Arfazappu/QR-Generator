@@ -1,7 +1,7 @@
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import * as XLSX from "xlsx";
 import { BASE_URL, FE_URL } from "../config.jsx";
@@ -46,57 +46,9 @@ const QrGenerator = () => {
   const [isUploading, setIsUploading] = useState(false); // For loading state
   const [isUploadDisabled, setIsUploadDisabled] = useState(false); // For disabling the button
   const [alertMessage, setAlertMessage] = useState("");
+  const dialogRef = useRef(null); 
 
-  // Handle Excel file upload
-  //   const handleFileUpload = (e) => {
-  //     const file = e.target.files[0];
-  //     const reader = new FileReader();
-
-  //     reader.onload = (event) => {
-  //       const data = new Uint8Array(event.target.result);
-  //       const workbook = XLSX.read(data, { type: "array" });
-  //       const sheetName = workbook.SheetNames[0];
-  //       const worksheet = workbook.Sheets[sheetName];
-  //       const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-  //     //   const parsedData = jsonData.map((row) => {
-  //     //     const parsedRow = { ...row }; // Create a copy of the row
-
-  //     //     // Loop through each key in the row
-  //     //     for (const key in parsedRow) {
-  //     //       if (parsedRow.hasOwnProperty(key)) {
-  //     //         const value = parsedRow[key];
-
-  //     //         // If the value is an Excel date serial number, convert it
-  //     //         if (isExcelDate(value)) {
-  //     //           parsedRow[key] = excelDateToJSDate(value).toLocaleDateString("en-GB", {
-  //     //             day: "2-digit",
-  //     //             month: "short",
-  //     //             year: "numeric"
-  //     //           }); // Convert to a readable date format
-  //     //         }
-  //     //       }
-  //     //     }
-
-  //     //     return parsedRow;
-  //     //   });
-
-  //     //   console.log(parsedData)
-
-  //       // Set Excel data
-  //       setExcelData(jsonData);
-  //     //   setExcelData(parsedData);
-
-  //       // Check if there is data in the Excel file
-  //       if (jsonData.length > 0) {
-  //         setCurrentData(jsonData[0]);
-  //       } else {
-  //         alert("No data found in the uploaded Excel file.");
-  //       }
-  //     };
-
-  //     reader.readAsArrayBuffer(file);
-  //   };
+  
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -303,11 +255,15 @@ const QrGenerator = () => {
 
   const dialog = document.querySelector("dialog");
   function handleShowDialog(){
-    dialog.showModal();
+    if (dialogRef.current) {
+      dialogRef.current.showModal(); // Show the dialog
+    }
   }
 
   function handleCloseDialog(){
-    dialog.close();
+    if (dialogRef.current) {
+      dialogRef.current.close(); // Close the dialog
+    }
   }
 
   return (
@@ -341,33 +297,9 @@ const QrGenerator = () => {
         </button>
       </div>
 
-      {/* <a href={selectedFile} download className="download-button">
-        Download Excel Template
-        </a>
+      
 
-        <div className="parameters-box">
-        <h3>Required Parameters</h3>
-        <ul>
-          {selectedParams.map((param, index) => (
-            <li key={index}>
-              <strong>{param.label}:</strong> <em>{param.example}</em>
-            </li>
-          ))}
-        </ul>
-      </div> */}
-
-      {/* {currentData && qrCodeUrl && (
-        <>
-          <Certificate
-            name={currentData.Name}
-            course={currentData.Course}
-            date={currentData.Date}
-            qrCodeUrl={qrCodeUrl}
-          />
-        </>
-      )} */}
-
-      <dialog className="p-4 rounded-md relative">
+      <dialog ref={dialogRef} className="p-4 rounded-md relative">
         <button onClick={handleCloseDialog} className="absolute right-8 top-2"><RxCross2 /></button>
 
       <div className="parameters-box">
@@ -404,21 +336,7 @@ const QrGenerator = () => {
         </button>
       ) : null}
 
-      {/* Render Generated Certificates */}
-      {/* {generatedCertificates.map((cert, index) => (
-        <div
-          key={index}
-          id={`cert-${cert.QrId}`}
-          className="certificate-cont"
-        >
-          <Certificate2
-            name={cert.Name}
-            course={cert.Course}
-            date={cert.Date}
-            qrCodeUrl={cert.qrCodeUrl}
-          />
-        </div>
-      ))} */}
+   
 
       {generatedDocuments.map((doc, index) => (
         <div key={index} id={`doc-${doc.QrId}`} className="document-cont">
