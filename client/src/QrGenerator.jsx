@@ -3,11 +3,11 @@ import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-import { BASE_URL, FE_URL } from '../config.jsx';
+import { BASE_URL, FE_URL } from "../config.jsx";
 import "./App.css";
 import Certificate2 from "./Certificate2";
-import { FE_URL, BASE_URL } from "../config.jsx";
 import CheckTemplate from "./CheckTemplate.jsx";
+import { RxCross2 } from "react-icons/rx";
 
 //const BASE_URL = "http://localhost:9098";
 // const BASE_URL = "https://cryptocheck-proto.onrender.com";
@@ -15,27 +15,25 @@ import CheckTemplate from "./CheckTemplate.jsx";
 //const FE_URL="https://qr-generator-tvao-cw8vznivn-mohammed-ajmals-projects-95362c99.vercel.app"
 // const FE_URL="http://localhost:5173"
 
-const filePaths={
-  certificate:"../public/assets/sample1.xlsx",
-  bankDocument : "../public/assets/sample2.xlsx"
-}
+const filePaths = {
+  certificate: "../public/assets/sample1.xlsx",
+  cheque: "../public/assets/sample2.xlsx",
+};
 
 const requiredParams = {
   certificate: [
     { label: "Name", example: "John Doe" },
     { label: "Course", example: "Bachelor of Science" },
     { label: "Date", example: "01-01-2024" },
-    { label: "Register Number", example: "123456" }
+    { label: "Register Number", example: "123456" },
   ],
-  bankDocument: [
+  cheque: [
     { label: "Account Holder Name", example: "Jane Smith" },
     { label: "Bank Name", example: "Bank of America" },
     { label: "Cheque Number", example: "789654123" },
-    { label: "Issue Date", example: "10-09-2024" }
-  ]
+    { label: "Issue Date", example: "10-09-2024" },
+  ],
 };
-
-
 
 const QrGenerator = () => {
   const [excelData, setExcelData] = useState([]);
@@ -43,6 +41,11 @@ const QrGenerator = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [currentData, setCurrentData] = useState(null);
   const [generatedDocuments, setGeneratedDocuments] = useState([]);
+
+  const [generatedDocumentData, setGeneratedDocumentData] = useState([]);
+  const [isUploading, setIsUploading] = useState(false); // For loading state
+  const [isUploadDisabled, setIsUploadDisabled] = useState(false); // For disabling the button
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Handle Excel file upload
   //   const handleFileUpload = (e) => {
@@ -201,7 +204,8 @@ const QrGenerator = () => {
     setGeneratedDocuments(generatedData);
     console.log(generatedData);
 
-    uploadGeneratedData(generatedData);
+    // uploadGeneratedData(generatedData);
+    setGeneratedDocumentData(generatedData);
   };
 
   const uploadGeneratedData = async (data) => {
@@ -218,7 +222,6 @@ const QrGenerator = () => {
 
       const result = await response.json();
       console.log("Data uploaded successfully:", result);
-      
     } catch (error) {
       console.error("Error uploading data to backend:", error);
     }
@@ -228,67 +231,93 @@ const QrGenerator = () => {
     return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   };
 
-  const uploadDocuments = (documents) => {
-    documents.forEach((doc) => {
-      // Capture the certificate layout as an image using html2canvas
-      html2canvas(document.getElementById(`doc-${doc.QrId}`), {
-        scale: 2,
-      }).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
+  const uploadDocuments = async (documents) => {
+    try {
+      setIsUploading(true);
+      setAlertMessage("");
 
-        const pdf = new jsPDF({
-          orientation: "landscape",
-          unit: "px",
-          format: [canvas.width, canvas.height + 100],
-        });
+      await uploadGeneratedData(generatedDocumentData);
 
-        // Add the image to the PDF
-        pdf.addImage(
-          imgData,
-          "PNG",
-          0,
-          50,
-          canvas.width,
-          canvas.height,
-          undefined,
-          "FAST"
-        ); //FAST compress the pdf
-        // pdf.save(`${cert.RegisterNumber}.pdf`)
+      documents.forEach((doc) => {
+        // Capture the certificate layout as an image using html2canvas
+        html2canvas(document.getElementById(`doc-${doc.QrId}`), {
+          scale: 2,
+        }).then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
 
-        // Convert the PDF to a Blob
-        const pdfBlob = pdf.output("blob");
-
-        // Prepare form data for the file upload
-        const formData = new FormData();
-        const documentName = doc?.RegisterNumber || doc?.Cheque_number;
-        formData.append("file", pdfBlob, `${documentName}.pdf`);
-        formData.append("fileType", "application/pdf");
-
-        const uploadFileName = documentType == 'certificate' ? doc.RegisterNumber : doc.Cheque_number;
-        // Upload the certificate PDF to the server
-        fetch(`${BASE_URL}/api/upload?fileName=${uploadFileName}`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Certificate uploaded successfully:", data);
-          })
-          .catch((error) => {
-            console.error("Error uploading certificate:", error);
+          const pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [canvas.width, canvas.height + 100],
           });
+
+          // Add the image to the PDF
+          pdf.addImage(
+            imgData,
+            "PNG",
+            0,
+            50,
+            canvas.width,
+            canvas.height,
+            undefined,
+            "FAST"
+          ); //FAST compress the pdf
+          // pdf.save(`${cert.RegisterNumber}.pdf`)
+
+          // Convert the PDF to a Blob
+          const pdfBlob = pdf.output("blob");
+
+          // Prepare form data for the file upload
+          const formData = new FormData();
+          const documentName = doc?.RegisterNumber || doc?.Cheque_number;
+          formData.append("file", pdfBlob, `${documentName}.pdf`);
+          formData.append("fileType", "application/pdf");
+
+          const uploadFileName =
+            documentType == "certificate"
+              ? doc.RegisterNumber
+              : doc.Cheque_number;
+          // Upload the certificate PDF to the server
+          fetch(`${BASE_URL}/api/upload?fileName=${uploadFileName}`, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Certificate uploaded successfully:", data);
+            })
+            .catch((error) => {
+              console.error("Error uploading certificate:", error);
+            });
+        });
       });
-    });
+    } catch (error) {
+      console.error("Error uploading certificates:", error);
+    } finally {
+      setIsUploading(false);
+    }
   };
+
+  const selectedFile = filePaths[documentType];
+  const selectedParams = requiredParams[documentType];
+
+  const dialog = document.querySelector("dialog");
+  function handleShowDialog(){
+    dialog.showModal();
+  }
+
+  function handleCloseDialog(){
+    dialog.close();
+  }
 
   return (
     <div className="App">
+      {alertMessage && (
+        <div className="alert alert-success">{alertMessage}</div>
+      )}
       <h1 className="app-title">QR Code Generator</h1>
 
-      
-
       <div className="upload-section">
-
         {/* Select Document Type */}
         <select
           value={documentType}
@@ -307,14 +336,12 @@ const QrGenerator = () => {
           className="file-input"
         />
 
-        
-
         <button onClick={handleGenerate} className="generate-button">
           Generate
         </button>
       </div>
 
-      <a href={selectedFile} download className="download-button">
+      {/* <a href={selectedFile} download className="download-button">
         Download Excel Template
         </a>
 
@@ -327,7 +354,7 @@ const QrGenerator = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
 
       {/* {currentData && qrCodeUrl && (
         <>
@@ -340,12 +367,40 @@ const QrGenerator = () => {
         </>
       )} */}
 
+      <dialog className="p-4 rounded-md relative">
+        <button onClick={handleCloseDialog} className="absolute right-8 top-2"><RxCross2 /></button>
+
+      <div className="parameters-box">
+        <h3>Required Parameters</h3>
+        <ul>
+          {selectedParams.map((param, index) => (
+            <li key={index}>
+              <strong>{param.label}:</strong> <em>{param.example}</em>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <a href={selectedFile} download className="download-button">
+        Download Excel Template
+      </a>
+      </dialog>
+
+      <div className="text-sm text-center">
+        Instruction for uploading documents <button onClick={handleShowDialog} className="text-blue-500">Click here</button>
+      </div>
+
+      
+
       {generatedDocuments.length > 0 ? (
         <button
           onClick={() => uploadDocuments(generatedDocuments)}
-          className="upload-button generate-button"
+          className={`upload-button generate-button ${
+            isUploading || isUploadDisabled ? "disabled" : ""
+          }`}
+          disabled={isUploadDisabled || isUploading}
         >
-          {isUploading ? "Loading..." : "Upload All Certificates"}
+          {isUploading ? "Loading..." : "Upload All Document"}
         </button>
       ) : null}
 
