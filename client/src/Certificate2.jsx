@@ -17,6 +17,7 @@ function Certificate2({ name, course, date, qrCodeUrl }) {
         <div className="w-8 h-8 bg-white rounded-full" />
       </div>
     </div> */}
+    {/* Ashfaq Testing here. */}
 
     <div className='ribbon'>
     <div className="w-12 h-12 border-2 border-white rounded-full flex items-center justify-center">

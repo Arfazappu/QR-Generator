@@ -10,6 +10,7 @@ const Navbar = () => {
       <Link to="/verify" className="nav-button">
         QR Verify
       </Link>
+      {/* bgbgbgbg */}
     </div>
   );
 };
