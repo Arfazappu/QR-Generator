@@ -187,3 +187,88 @@ svg {
   background-color: #0056b3;
 }
 
+.alert {
+  padding: 10px;
+  background-color: #4caf50; /* Green */
+  color: white;
+  margin-bottom: 15px;
+}
+
+.alert-success {
+  border-left: 6px solid #4caf50;
+}
+
+.disabled {
+  background-color: #ccc; /* Greyed out color */
+  /* color: #888; Greyed out text */
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #0379FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.download-button:hover {
+  background-color: #0261CC;
+}
+
+
+.parameters-box {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 40vw;
+}
+
+.parameters-box h3 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.parameters-box ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.parameters-box li {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.parameters-box li strong {
+  color: #0379FF;
+}
+
+.parameters-box li em {
+  color: #555;
+}
+
+.download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #0379FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.download-button:hover {
+  background-color: #0261CC;
+}
+

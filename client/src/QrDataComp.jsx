@@ -4,7 +4,7 @@ import { BASE_URL } from '../config.jsx';
 import './QrDataComp.css'; // Import the CSS file
 
 import check from './assets/check.png';
-import redCross from './assets/redCross.png';
+import redCross from './assets/redcross.png';
 
 const mockData = {
   name: "John Doe",
