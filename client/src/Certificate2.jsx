@@ -1,7 +1,7 @@
 import React from 'react'
 import './Certificate2.css'
 
-function Certificate2({ name, course, date, qrCodeUrl }) {
+function Certificate2({ name, course, regNo, date, qrCodeUrl }) {
   return (
     <div className="w-full max-w-4xl mx-auto bg-[whitesmoke] my-5 p-8 rounded-md border border-gray-500 relative overflow-hidden">
     {/* Background Pattern */}
@@ -34,11 +34,13 @@ function Certificate2({ name, course, date, qrCodeUrl }) {
         and upon certified nominee, we hereby confer upon
       </p>
 
-      <h2 className="text-5xl font-serif mb-4">{name}</h2>
+      <h2 className="text-5xl font-serif mb-1">{name}</h2>
+
+      <p className="text-sm mb-3">({regNo})</p>
 
 
       <p className="text-xl mb-2">The degree of</p>
-      <h3 className="text-3xl font-serif mb-12">{course}</h3>
+      <h3 className="text-3xl font-serif mb-8">{course}</h3>
       <p className="text-xs mb-2">issued on {date}</p>
       
       <div className="flex justify-between items-end mt-16">

@@ -19,18 +19,30 @@ body {
   font-size: 20px;
 }
 
+.generator-section{
+  margin-top: 100px;
+  min-height: 65vh;
+}
+
 .app-title {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 36px;
+  /* color: #333; */
+  color: #42B2A4;
+  /* margin-bottom: 20px; */
+  font-size: 42px;
   font-weight: 600;
-
+}
+.app-sub{
+  display: block;
+  font-size: 24px;
+  color: #4C5461;
+  text-align: center;
 }
 
 .upload-section {
   max-width: 800px;
   margin: auto;
+  margin-top: 20px;
   display: flex;
   gap: 10px;
   align-items: center;

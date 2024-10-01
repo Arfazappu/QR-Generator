@@ -85,6 +85,13 @@ const QrDataComponent = () => {
             <p className="text-sm text-gray-500">{data?.Payee_Name ? "Cheque Number" : "Register Number"}</p>
             <p className="font-medium text-gray-800">{data?.RegisterNumber ||data?.Cheque_number|| mockData.registrationNumber}</p>
           </div>
+          {data?.Amount && (
+            <div>
+            <p className="text-sm text-gray-500">Cheque Amount</p>
+            <p className="font-medium text-gray-800">${data?.Amount || '0000'}</p>
+          </div>
+          )}
+          
           <div>
             <p className="text-sm text-gray-500">QR ID</p>
             <p className="font-medium text-gray-800">{data?.QrId || mockData.qrId}</p>

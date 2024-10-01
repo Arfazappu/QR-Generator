@@ -1,7 +1,7 @@
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import * as XLSX from "xlsx";
 import { BASE_URL, FE_URL } from "../config.jsx";
@@ -46,7 +46,15 @@ const QrGenerator = () => {
   const [isUploading, setIsUploading] = useState(false); // For loading state
   const [isUploadDisabled, setIsUploadDisabled] = useState(false); // For disabling the button
   const [alertMessage, setAlertMessage] = useState("");
-  const dialogRef = useRef(null); 
+  const dialogRef = useRef(null);
+
+  const resetData = () => {
+    setExcelData([]);
+    setCurrentData(null);
+    setGeneratedDocuments([]);
+    setGeneratedDocumentData([]);
+    setQrCodeUrl("");
+  };
 
   
   const handleFileUpload = (e) => {
@@ -152,13 +160,27 @@ const QrGenerator = () => {
       }
     }
 
+    window.scrollBy({
+      top: 400, 
+      behavior: 'smooth'
+    });
+
     // Now set the generated certificates after the loop completes
     setGeneratedDocuments(generatedData);
     console.log(generatedData);
 
     // uploadGeneratedData(generatedData);
     setGeneratedDocumentData(generatedData);
+
   };
+
+  // useEffect(()=>{
+  //   window.scrollTo({
+  //     top:400,
+  //     left:0,
+  //     behavior: "smooth",
+  //   })
+  // },[])
 
   const uploadGeneratedData = async (data) => {
     try {
@@ -267,17 +289,21 @@ const QrGenerator = () => {
   }
 
   return (
-    <div className="App">
+    <div className="App generator-section">
       {alertMessage && (
         <div className="alert alert-success">{alertMessage}</div>
       )}
       <h1 className="app-title">QR Code Generator</h1>
+      <span className="app-sub">Generate document embedded with unique QR code in minutes</span>
 
       <div className="upload-section">
         {/* Select Document Type */}
         <select
           value={documentType}
-          onChange={(e) => setDocumentType(e.target.value)}
+          onChange={(e) => {
+            resetData();
+            setDocumentType(e.target.value)
+          }}
           className="document-select"
         >
           <option value="certificate">Certificate</option>
@@ -288,7 +314,10 @@ const QrGenerator = () => {
         <input
           type="file"
           accept=".xlsx, .xls"
-          onChange={handleFileUpload}
+          onChange={(e) => {
+            resetData();
+            handleFileUpload(e);
+          }}
           className="file-input"
         />
 
@@ -345,6 +374,7 @@ const QrGenerator = () => {
               name={doc.Name}
               course={doc.Course}
               date={doc.Date}
+              regNo={doc.RegisterNumber}
               qrCodeUrl={doc.qrCodeUrl}
             />
           ) : (
