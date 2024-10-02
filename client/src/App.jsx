@@ -14,6 +14,7 @@ import Footer from "./components/footer/Footer";
 import LoginForm from "./pages/Login";
 import SignUpForm from "./pages/Signup";
 import { useAuth } from "./context/AuthContext";
+import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
   // const [view, setView] = useState('generator');
@@ -54,12 +55,6 @@ const App = () => {
       <Footer />
     </Router>
   );
-};
-
-const PrivateRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-
-  return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 export default App;

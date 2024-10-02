@@ -1,21 +1,53 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { BASE_URL } from "../../config";
+import Loader from "../components/commonComponent/Loader";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const { login } = useAuth();
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Login attempted with:', { email, password })
-    login();
-    navigate('/');
-  }
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    // console.log('Login attempted with:', { email, password })
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${BASE_URL}/api/login`,{
+        method:'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body:JSON.stringify({email,password})
+      })
+
+      if(!response.ok){
+        throw new Error(`Response Status : ${response.status}`)
+      }
+
+      const result = await response.json();
+
+      const authToken = result?.content?.accessToken;
+
+      // console.log(result);
+
+      setEmail('');
+      setPassword('');
+
+      login(authToken);
+      navigate("/");
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error logging in, Please try again.')
+    } finally{
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -42,6 +74,7 @@ export default function LoginForm() {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -58,13 +91,18 @@ export default function LoginForm() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
           </div>
 
           <div className="flex items-center justify-end">
             <div className="text-sm">
-              <Link to='' className="font-medium text-[#42B2A4] hover:text-[#3ba094]">
+              <Link
+                to=""
+                className="font-medium text-[#42B2A4] hover:text-[#3ba094]"
+                onClick={(e) => isLoading && e.preventDefault()}
+              >
                 Forgot your password?
               </Link>
             </div>
@@ -74,20 +112,25 @@ export default function LoginForm() {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#42B2A4] hover:bg-[#3ba094] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3ba094]"
+              disabled={isLoading}
             >
-              Sign in
+               {isLoading ? (<div className="flex gap-3">Sign in <Loader /></div>) : 'Sign in'}
             </button>
           </div>
         </form>
         <div className="text-sm text-center">
           <p>
-            Don't have an account?{' '}
-            <Link to='/signup' className="font-medium text-[#42B2A4] hover:text-[#3ba094]">
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-[#42B2A4] hover:text-[#3ba094]"
+              onClick={(e) => isLoading && e.preventDefault()}
+            >
               Create one
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

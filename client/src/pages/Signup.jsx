@@ -1,23 +1,61 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { BASE_URL } from '../../config'
+import Loader from '../components/commonComponent/Loader'
 
 export default function SignUpForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
-    // Here you would typically handle the sign-up logic
-    console.log('Sign up attempted with:', { name, email, password, confirmPassword })
-    login();
-    navigate('/');
+    if(confirmPassword !== password){
+      alert('Password is not matching.')
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${BASE_URL}/api/register`,{
+        method:'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body:JSON.stringify({name, email, password})
+      })
+
+      if(!response.ok){
+        throw new Error(`Response status : ${response.status}`)
+      }
+
+      const result = await response.json();
+
+      const authToken = result?.content?.accessToken;
+
+      // console.log(result);
+      setName('')
+      setPassword('')
+      setConfirmPassword('')
+      setEmail('')
+
+      login(authToken);
+      navigate("/");
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error registering, Please try again.')
+      
+    } finally{
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -45,6 +83,7 @@ export default function SignUpForm() {
                 placeholder="Full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -61,6 +100,7 @@ export default function SignUpForm() {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -77,6 +117,7 @@ export default function SignUpForm() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -93,6 +134,7 @@ export default function SignUpForm() {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -101,15 +143,16 @@ export default function SignUpForm() {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#42B2A4] hover:bg-[#3ba094] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3ba094]"
+              disabled={isLoading}
             >
-              Sign up
+              {isLoading ? (<div className="flex gap-3">Sign up <Loader /></div>) : 'Sign up'}
             </button>
           </div>
         </form>
         <div className="text-sm text-center">
           <p>
             Already have an account?{' '}
-            <Link to='/login' className="font-medium text-[#42B2A4] hover:text-[#3ba094]">
+            <Link to='/login' onClick={(e) => isLoading && e.preventDefault()} className="font-medium text-[#42B2A4] hover:text-[#3ba094]">
               Sign in
             </Link>
           </p>
