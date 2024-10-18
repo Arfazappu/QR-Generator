@@ -42,9 +42,9 @@ const App = () => {
           <Route
             path="/qr/:qrId"
             element={
-              <PrivateRoute>
+              
                 <QrDataComponent />
-              </PrivateRoute>
+              
             }
           />
 
