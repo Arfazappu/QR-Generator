@@ -32,6 +32,7 @@ const requiredParams = {
     { label: "Bank Name", example: "Bank of America" },
     { label: "Cheque Number", example: "789654123" },
     { label: "Issue Date", example: "10-09-2024" },
+    {label: "amount",example:"100"}
   ],
 };
 
@@ -209,62 +210,77 @@ const QrGenerator = () => {
     try {
       setIsUploading(true);
       setAlertMessage("");
-
-      await uploadGeneratedData(generatedDocumentData);
-
-      documents.forEach((doc) => {
-        // Capture the certificate layout as an image using html2canvas
-        html2canvas(document.getElementById(`doc-${doc.QrId}`), {
-          scale: 2,
-        }).then((canvas) => {
-          const imgData = canvas.toDataURL("image/png");
-
-          const pdf = new jsPDF({
-            orientation: "landscape",
-            unit: "px",
-            format: [canvas.width, canvas.height + 100],
-          });
-
-          // Add the image to the PDF
-          pdf.addImage(
-            imgData,
-            "PNG",
-            0,
-            50,
-            canvas.width,
-            canvas.height,
-            undefined,
-            "FAST"
-          ); //FAST compress the pdf
-          // pdf.save(`${cert.RegisterNumber}.pdf`)
-
-          // Convert the PDF to a Blob
-          const pdfBlob = pdf.output("blob");
-
-          // Prepare form data for the file upload
-          const formData = new FormData();
-          const documentName = doc?.RegisterNumber || doc?.Cheque_number;
-          formData.append("file", pdfBlob, `${documentName}.pdf`);
-          formData.append("fileType", "application/pdf");
-
-          const uploadFileName =
-            documentType == "certificate"
-              ? doc.RegisterNumber
-              : doc.Cheque_number;
-          // Upload the certificate PDF to the server
-          fetch(`${BASE_URL}/api/upload?fileName=${uploadFileName}`, {
-            method: "POST",
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Certificate uploaded successfully:", data);
+  
+      const updatedGeneratedDocumentData = [...generatedDocumentData]; // Clone the original data
+  
+      const uploadPromises = documents.map((doc) => {
+        return new Promise((resolve, reject) => {
+          // Capture the certificate layout as an image using html2canvas
+          html2canvas(document.getElementById(`doc-${doc.QrId}`), { scale: 2 })
+            .then((canvas) => {
+              const imgData = canvas.toDataURL("image/png");
+  
+              const pdf = new jsPDF({
+                orientation: "landscape",
+                unit: "px",
+                format: [canvas.width, canvas.height + 100],
+              });
+  
+              // Add the image to the PDF
+              pdf.addImage(imgData, "PNG", 0, 50, canvas.width, canvas.height, undefined, "FAST");
+  
+              // Convert the PDF to a Blob
+              const pdfBlob = pdf.output("blob");
+  
+              // Prepare form data for the file upload
+              const formData = new FormData();
+              const documentName = doc?.RegisterNumber || doc?.Cheque_number;
+              formData.append("file", pdfBlob, `${documentName}.pdf`);
+              formData.append("fileType", "application/pdf");
+  
+              const uploadFileName = documentType === "certificate" ? doc.RegisterNumber : doc.Cheque_number;
+  
+              // Upload the certificate PDF to the server
+              fetch(`${BASE_URL}/api/upload?fileName=${uploadFileName}`, {
+                method: "POST",
+                body: formData,
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log("Certificate uploaded successfully:", data);
+  
+                  // Find and update the corresponding document in updatedGeneratedDocumentData with the file URL
+                  const index = updatedGeneratedDocumentData.findIndex(
+                    (generatedDoc) => generatedDoc.QrId === doc.QrId
+                  );
+  
+                  if (index !== -1) {
+                    updatedGeneratedDocumentData[index].file = data.fileUrl || `${BASE_URL}/uploads/${documentName}.pdf`;
+                  }
+  
+                  // Resolve the promise after the document is uploaded and updated
+                  resolve();
+                })
+                .catch((error) => {
+                  console.error("Error uploading certificate:", error);
+                  reject(error);
+                });
             })
             .catch((error) => {
-              console.error("Error uploading certificate:", error);
+              console.error("Error generating PDF:", error);
+              reject(error);
             });
         });
       });
+  
+      // Wait for all uploads to finish
+      await Promise.all(uploadPromises);
+  
+      // Now upload the updated generatedDocumentData after all files are uploaded
+      await uploadGeneratedData(updatedGeneratedDocumentData);
+  
+      console.log("All documents uploaded and data sent successfully:", updatedGeneratedDocumentData);
+  
     } catch (error) {
       console.error("Error uploading certificates:", error);
     } finally {
