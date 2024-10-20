@@ -255,7 +255,7 @@ const QrGenerator = () => {
                   );
   
                   if (index !== -1) {
-                    updatedGeneratedDocumentData[index].file = data.fileUrl || `${BASE_URL}/uploads/${documentName}.pdf`;
+                    updatedGeneratedDocumentData[index].file = data.fileUrl || `${BASE_URL}/content/${documentName}.pdf`;
                   }
   
                   // Resolve the promise after the document is uploaded and updated
