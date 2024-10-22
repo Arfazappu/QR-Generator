@@ -15,6 +15,8 @@ import LoginForm from "./pages/Login";
 import SignUpForm from "./pages/Signup";
 import { useAuth } from "./context/AuthContext";
 import PrivateRoute from "./PrivateRoute";
+import NotFound from "./pages/NotFound";
+import ViewData from "./ViewData";
 
 const App = () => {
   // const [view, setView] = useState('generator');
@@ -48,8 +50,10 @@ const App = () => {
             }
           />
 
+          <Route path="/view-data" element={<ViewData/>} />
+
           {/* If the user is not authenticated, they will be redirected to the login page */}
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<NotFound/>} />
         </Routes>
       </div>
       <Footer />

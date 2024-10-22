@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { BASE_URL } from '../../config'
 import Loader from '../components/commonComponent/Loader'
+import { useSnackbar } from 'notistack'
 
 export default function SignUpForm() {
   const [name, setName] = useState('')
@@ -13,7 +14,9 @@ export default function SignUpForm() {
 
   const navigate = useNavigate();
 
-  const { login } = useAuth();
+  const { login, authToken } = useAuth();
+
+  const {enqueueSnackbar} = useSnackbar()
 
   const handleSubmit = async(e) => {
     e.preventDefault()
@@ -38,25 +41,30 @@ export default function SignUpForm() {
 
       const result = await response.json();
 
-      const authToken = result?.content?.accessToken;
+      const token = result?.content?.accessToken;
 
       // console.log(result);
       setName('')
       setPassword('')
       setConfirmPassword('')
-      setEmail('')
+      setEmail('');
 
-      login(authToken);
+      enqueueSnackbar('Successfully registered.', { variant: 'success' });
+
+      login(token);
       navigate("/");
 
     } catch (error) {
       console.error('Error:', error);
-      alert('Error registering, Please try again.')
+      // alert('Error registering, Please try again.')
+      enqueueSnackbar('Error registering, Please try again.', { variant: 'error'});
       
     } finally{
       setIsLoading(false);
     }
   }
+
+  if(authToken) navigate('/'); // navigate to home if already logged in
 
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

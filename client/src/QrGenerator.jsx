@@ -8,6 +8,7 @@ import { BASE_URL, FE_URL } from "../config.jsx";
 import "./App.css";
 import Certificate2 from "./Certificate2";
 import CheckTemplate from "./CheckTemplate.jsx";
+import { useSnackbar } from "notistack";
 
 //const BASE_URL = "http://localhost:9098";
 // const BASE_URL = "https://cryptocheck-proto.onrender.com";
@@ -48,6 +49,8 @@ const QrGenerator = () => {
   const [isUploadDisabled, setIsUploadDisabled] = useState(false); // For disabling the button
   const [alertMessage, setAlertMessage] = useState("");
   const dialogRef = useRef(null);
+
+  const {enqueueSnackbar} = useSnackbar()
 
   const resetData = () => {
     setExcelData([]);
@@ -237,6 +240,8 @@ const QrGenerator = () => {
               const documentName = doc?.RegisterNumber || doc?.Cheque_number;
               formData.append("file", pdfBlob, `${documentName}.pdf`);
               formData.append("fileType", "application/pdf");
+
+              pdf.save(`${documentName}`)//to be removed
   
               const uploadFileName = documentType === "certificate" ? doc.RegisterNumber : doc.Cheque_number;
   
@@ -280,9 +285,15 @@ const QrGenerator = () => {
       await uploadGeneratedData(updatedGeneratedDocumentData);
   
       console.log("All documents uploaded and data sent successfully:", updatedGeneratedDocumentData);
+
+      enqueueSnackbar("Successfully uploaded the data to server.", {variant : "success"})
+      //reset the data once the uploading is successfully completed
+      resetData()
   
     } catch (error) {
       console.error("Error uploading certificates:", error);
+      enqueueSnackbar("Error uploading data, Please try again.", {variant : "error"})
+
     } finally {
       setIsUploading(false);
     }
@@ -337,7 +348,8 @@ const QrGenerator = () => {
           className="file-input"
         />
 
-        <button onClick={handleGenerate} className="generate-button">
+{/* disabled when there is data available */}
+        <button onClick={handleGenerate} className="generate-button" disabled={generatedDocuments.length > 0}> 
           Generate
         </button>
       </div>
@@ -377,7 +389,7 @@ const QrGenerator = () => {
           }`}
           disabled={isUploadDisabled || isUploading}
         >
-          {isUploading ? "Loading..." : "Upload All Document"}
+          {isUploading ? "Uploading..." : "Upload All Document"}
         </button>
       ) : null}
 

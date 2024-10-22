@@ -1,3 +1,4 @@
+import { useSnackbar } from "notistack";
 import React, { createContext, useState, useContext, useEffect } from "react";
 
 const AuthContext = createContext();
@@ -10,6 +11,8 @@ export const AuthProvider = ({ children }) => {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState(null)
   const [pending, setPending] = useState(true);
+
+  const {enqueueSnackbar} = useSnackbar()
 
   useEffect(()=>{
     const storedToken = localStorage.getItem('authToken');
@@ -30,6 +33,10 @@ export const AuthProvider = ({ children }) => {
     setAuthToken(null)
     // setIsAuthenticated(false); 
     localStorage.removeItem('authToken');
+
+    enqueueSnackbar('Logged out successfully.', { variant: 'info' });
+    console.log('something');
+    
   };
 
   // const isAuthenticated = !!authToken;
