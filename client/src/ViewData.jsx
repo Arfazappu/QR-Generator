@@ -5,6 +5,7 @@ import pdf2 from "./assets/testpdf/pdf2.pdf";
 import pdf3 from "./assets/testpdf/pdf3.pdf";
 import pdf4 from "./assets/testpdf/pdf4.pdf";
 import { useSnackbar } from "notistack";
+import { BASE_URL } from "../config";
 
 // const mockPDFFiles = [
 //   { id: "1", file: pdf1 },
@@ -20,14 +21,16 @@ function ViewData() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  function handleFetchData() {
+  async function handleFetchData() {
     setLoading(true);
     try {
-      const response = fetch(`/api/${documentType}`);
+      const response = await fetch(`${BASE_URL}/api/getDocs`);
       if (!response.ok) {
         throw new Error("Response", response);
       }
-      const data = response.json();
+      
+      const data = await response.json();
+      console.log(data.content);
       if (data) {
         setDocumentData(data?.content);
       } else {
@@ -60,7 +63,7 @@ function ViewData() {
 
         <button
           onClick={handleFetchData}
-          disabled={documentData.length > 0 || loading}
+          disabled={loading || documentData.length > 0 }
           className="generate-button min-w-fit"
         >
           {loading ? "Fetching..." : "Fetch Data"}

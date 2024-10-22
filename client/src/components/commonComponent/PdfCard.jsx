@@ -29,7 +29,7 @@ function PdfCard({pdf}) {
             </svg>
           </div>
           <div className="p-4">
-            <p className="text-sm font-semibold truncate mb-2">PDF {pdf.id}</p>
+            <p className="text-sm font-semibold truncate mb-2">{pdf.file.toString().split('/')[4]} {pdf.id}</p>
             <div className='flex items-center justify-between'>
                 <button onClick={handlePreview} className={secondaryBtnStyle}>View</button>
                 <button onClick={handleDownload} className={primaryBtnStyle}>Download</button>
