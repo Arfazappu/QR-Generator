@@ -38,7 +38,10 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between p-4 bg-background border-b border-gray-300">
       <div className="flex items-center">
-        <div className="text-2xl font-bold w-24 h-auto">
+        <div className="text-2xl font-bold w-24 h-auto cursor-pointer" 
+        onClick={() => window.location.href = "https://cryptochecks.ca"}
+        
+         >
           <img src={logo} alt="Crypto Checks" />
         </div>
       </div>
